@@ -1,0 +1,41 @@
+<div class="container">
+
+    <div ng-include="'partials/message.html'"></div>
+
+    <div class="page-header">
+        <h3>Login</h3>
+    </div>
+
+    <form role="form" ng-submit="login()" name='loginForm'>
+        <div class="form-group">
+            <label>Email</label>
+            <div class="row">
+                <div class="col-sm-4">
+                    <input class="form-control email" ng-model="email" type="email" name="email" placeholder="Email Address" required>
+                    <span ng-show="saveUserForm.email.$error.email">This is not a valid email.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-4">Password</label>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <input class="form-control" placeholder="Password" ng-model="password" name="password" type="password" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <a href="#/user/remind">Forgotten Password</a>
+        </div>
+
+        <div class="form-group">
+            <a href="#/user/register">Sign up</a>
+        </div>
+
+        <button type="submit" class="btn btn-warning">Login</button>
+    </form>
+</div>

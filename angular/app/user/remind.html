@@ -1,0 +1,23 @@
+<div class="container">
+    <div ng-include="'partials/message.html'"></div>
+
+    <form role="form" ng-submit="remindPassword()" name='remindForm'>
+        <div class="page-header">
+            <h3>Password Reminders</h3>
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <div class="row">
+                <div class="col-sm-4">
+                    <input class="form-control email" ng-model="email" type="email" name="email" placeholder="Email Address" required>
+                    <span ng-show="remindForm.email.$error.email">This is not a valid email.</span>
+                </div>
+            </div>
+        </div>
+
+    <div class="form-group">
+        <input type="submit" class="btn btn-warning" value="Submit">
+    </div>
+    </form>
+</div>

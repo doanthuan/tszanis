@@ -1,0 +1,43 @@
+<div class="container">
+    <div ng-include="'partials/message.html'"></div>
+
+    <div class="page-header">
+        <h3>Reset Password</h3>
+    </div>
+
+    <form role="form" ng-submit="resetPassword()" name='resetForm'>
+        <h3>Password Reset</h3>
+
+        <div class="form-group">
+            <label>Email address</label>
+            <div class="row">
+                <div class="col-sm-4">
+                    <input class="form-control email" ng-model="email" type="email" name="email" required>
+                    <span ng-show="resetForm.email.$error.email" class="error">This is not a valid email.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-4">Password</label>
+                <label class="col-sm-4">Password Confirm</label>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <input class="form-control" placeholder="Password" ng-model="password" name="password" type="password"  required>
+                </div>
+                <div class="col-sm-4">
+                    <input class="form-control" placeholder="Password Confirm" ng-model="password_confirm" name="password_confirm" type="password" required data-password-verify="password">
+                    <div ng-show="resetForm.password_confirm.$error.passwordVerify" class="error">Confirmation password does not match.</div>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" name="token" value="{{ resetToken }}">
+
+        <div class="form-group">
+            <input type="submit" class="btn btn-warning" value="Submit">
+        </div>
+    </form>
+</div>
