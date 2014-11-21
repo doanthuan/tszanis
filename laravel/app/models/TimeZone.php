@@ -9,4 +9,6 @@
 class TimeZone extends BaseModel{
     protected $table = 'timezone';
     protected $primaryKey = 'timezone_id';
+
+    protected $fillable = array('value');
 } 

@@ -27,3 +27,22 @@ Route::controller('language', 'LanguageController');
 Route::controller('country', 'CountryController');
 
 Route::controller('role', 'RoleController');
+
+Route::resource('request', 'TransRequestController');
+
+Route::controller('admin/language', 'AdminLanguageController');
+
+Route::controller('admin/time-zone', 'AdminTimeZoneController');
+
+Route::controller('admin/country', 'AdminCountryController');
+
+/*
+|--------------------------------------------------------------------------
+| Admin Auth
+|--------------------------------------------------------------------------
+*/
+
+Route::get('admin', 'AdminLanguageController@anyIndex');
+Route::get('admin/login', 'AdminAuthenController@login');
+Route::post('admin/login', 'AdminAuthenController@postLogin');
+Route::get('admin/logout', 'AdminAuthenController@logout');

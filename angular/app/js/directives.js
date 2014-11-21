@@ -20,6 +20,7 @@ directives.directive('butterbar', ['$rootScope',
         };
     }]);
 
+
 directives.directive("passwordVerify", function() {
     return {
         require: "ngModel",

@@ -51,28 +51,31 @@ App::error(function(Exception $exception, $code)
 {
 	Log::error($exception);
 
-    $message = $exception->getMessage();
+    if (Request::ajax())
+    {
+        $message = $exception->getMessage();
 
-    // switch statements provided in case you need to add
-    // additional logic for specific error code.
-    switch ($code) {
-        case 401:
-            return Response::json(array(
-                'code'      =>  401,
-                'message'   =>  $message
-            ), 401);
-        case 404:
-            $message            = (!$message ? $message = 'the requested resource was not found' : $message);
-            return Response::json(array(
-                'code'      =>  404,
-                'message'   =>  $message
-            ), 404);
+        // switch statements provided in case you need to add
+        // additional logic for specific error code.
+        switch ($code) {
+            case 401:
+                return Response::json(array(
+                    'code'      =>  401,
+                    'message'   =>  $message
+                ), 401);
+            case 404:
+                $message            = (!$message ? $message = 'the requested resource was not found' : $message);
+                return Response::json(array(
+                    'code'      =>  404,
+                    'message'   =>  $message
+                ), 404);
+        }
+
+        return Response::json(array(
+            'code'      =>  500,
+            'message'   =>  $message
+        ), 500);
     }
-
-    return Response::json(array(
-        'code'      =>  500,
-        'message'   =>  $message
-    ), 500);
 });
 
 /*
@@ -103,3 +106,13 @@ App::down(function()
 */
 
 require app_path().'/filters.php';
+
+/*
+|--------------------------------------------------------------------------
+| Route match
+|--------------------------------------------------------------------------
+*/
+Route::matched(function($route, $request)
+{
+    \Goxob\Core\Helper::setSegments($route);
+});

@@ -5,7 +5,7 @@ class UserController extends BaseController {
     {
         Auth::logout();
         Session::flush();
-        return Redirect::to('user/login');
+        return \Responser::success('Logout successfully.');
     }
 
     public function getLogin()
@@ -137,10 +137,12 @@ class UserController extends BaseController {
 
             $user->save();
 
-            return \Responser::success('Your profile has been updated');
+            $user->languages = $user->languages()->lists('user_lang.language_id');
+
+            return \Responser::success('Your profile has been updated', $user);
 
         } else {
-            return \Responser::error($user->getErrors()->getMessages());
+            return \Responser::error($user->getErrors());
         }
     }
 

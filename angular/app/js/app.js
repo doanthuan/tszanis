@@ -1,0 +1,59 @@
+'use strict';
+
+// Declare app level module which depends on views, and components
+var app = angular.module('myApp', [
+    'ngRoute',
+    'myApp.user',
+    'myApp.request',
+    'myApp.version',
+    'myApp.services',
+    'myApp.directives',
+]).
+config(['$routeProvider', function($routeProvider) {
+  $routeProvider.otherwise({redirectTo: '/user/login'});
+}]);
+
+app.controller('AppController', ['$scope','$http','$location', 'flash', 'authenticationSvc',
+    function($scope, $http, $location, flash, authenticationSvc) {
+
+        $scope.$on("locationChangeStart", function(event) {
+
+        });
+
+        $scope.$on("$routeChangeSuccess", function(userInfo) {
+            $scope.isLoggedIn = authenticationSvc.checkLogin();
+        });
+
+        $scope.$on("$routeChangeError", function(event, current, previous, eventObj) {
+            if (eventObj.authenticated === false) {
+                $location.path("/login");
+            }
+        });
+
+    }]);
+
+
+
+app.factory("flash", function(){
+    var errorMessage = '';
+    var successMessage = '';
+
+    return {
+        getSuccessMessage: function () {
+            var tmp = successMessage;
+            successMessage = '';
+            return tmp;
+        },
+        setSuccessMessage: function(value) {
+            successMessage = value;
+        },
+        getErrorMessage: function () {
+            var tmp = errorMessage;
+            errorMessage = '';
+            return tmp;
+        },
+        setErrorMessage: function(value) {
+            errorMessage = value;
+        }
+    };
+});

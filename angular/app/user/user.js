@@ -4,13 +4,17 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider
-    .when('/user/register', {
+  .when('/user/register', {
     templateUrl: 'user/register.html',
     controller: 'UserRegistController'
   })
   .when('/user/login', {
       templateUrl: 'user/login.html',
-      controller: 'UserController'
+      controller: 'UserLoginController'
+  })
+  .when('/user/logout', {
+      controller: 'UserLogoutController',
+      template: ''
   })
   .when('/user/remind', {
       templateUrl: 'user/remind.html',
@@ -39,64 +43,72 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
           },
           roles: function(MultiRoleLoader) {
               return MultiRoleLoader();
-          }
+          },
+          user: function(authenticationSvc){
+              return authenticationSvc.getUserInfo();
+          },
+          auth: ["$q", "authenticationSvc", function($q, authenticationSvc) {
+              var userInfo = authenticationSvc.getUserInfo();
+
+              if (userInfo) {
+                  return $q.when(userInfo);
+              } else {
+                  return $q.reject({ authenticated: false });
+              }
+          }]
       }
   })
+
   ;
 }])
 
-.controller('UserController', ['$scope','$http','$location', 'flash', 'UserService',
-        function($scope, $http, $location, flash, UserService) {
+.controller('UserLoginController', ['$scope','$http','$location', 'flash', 'authenticationSvc',
+        function($scope, $http, $location, flash, authenticationSvc) {
 
-        var baseUrl = 'http://laravel_angular.local/api';
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
 
 
         $scope.login = function(){
-            var postData = {
-                email: $scope.email,
-                password: $scope.password
-            };
-
-            $http.post(baseUrl + '/user/login', postData).success(function(data, status, headers, config) {
-
-                if(data.status == 'success'){
-
-                    UserService.setUser(data.data);
-
-                    flash.setSuccessMessage(data.message);
-                    $location.path('/user/profile');
-                }
-                else{
-                    $scope.successMsg = '';
-                    $scope.errorMsg = data.message;
-                }
-
-            }).error(function(data, status, headers, config) {
-                console.log(data.message);
+            authenticationSvc.login($scope.email, $scope.password).then(function(result) {
+                flash.setSuccessMessage(result);
+                $location.path('/user/profile');
+            }, function(error) {
+                $scope.successMsg = '';
+                $scope.errorMsg = error;
             });
         };
 
 }])
 
+.controller('UserLogoutController', ['$scope','$http','$location', 'flash', 'authenticationSvc',
+    function($scope, $http, $location, flash, authenticationSvc) {
+
+        authenticationSvc.logout().then(function(result) {
+            $location.path('/user/login');
+        }, function(error) {
+            flash.setErrorMessage(error);
+            $location.path('/user/login');
+        });
+
+    }])
+
 .controller('UserRegistController', ['$scope','$http','$location', 'flash',
     function($scope, $http, $location, flash) {
 
-        var baseUrl = 'http://laravel_angular.local/api';
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
 
 
-        $http.get(baseUrl + '/country/list').success(function(data, status, headers, config) {
+        $http.get('/api/country/list').success(function(data, status, headers, config) {
             $scope.countries = data.data;
         });
 
-        $http.get(baseUrl + '/language/list').success(function(data, status, headers, config) {
+        $http.get('/api/language/list').success(function(data, status, headers, config) {
             $scope.languages = data.data;
         });
 
-        $http.get(baseUrl + '/timezone/list').success(function(data, status, headers, config) {
+        $http.get('/api/timezone/list').success(function(data, status, headers, config) {
             $scope.timezones = data.data;
 
         });
@@ -114,7 +126,7 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
                 country_id: $scope.country
             };
 
-            $http.post(baseUrl + '/user/register', postData).success(function(data, status, headers, config) {
+            $http.post('/api/user/register', postData).success(function(data, status, headers, config) {
 
                 if(data.status == 'success'){
                     flash.setSuccessMessage(data.message);
@@ -134,7 +146,6 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
 .controller('UserRemindController', ['$scope','$http','$location', 'flash',
     function($scope, $http, $location, flash) {
 
-        var baseUrl = 'http://laravel_angular.local/api';
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
 
@@ -143,7 +154,7 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
                 email: $scope.email
             };
 
-            $http.post(baseUrl + '/password/remind', postData).success(function(data, status, headers, config) {
+            $http.post('/api/password/remind', postData).success(function(data, status, headers, config) {
 
                 if(data.status == 'success'){
                     flash.setSuccessMessage(data.message);
@@ -165,7 +176,6 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
 .controller('UserResetController', ['$scope','$http','$location', 'flash', '$routeParams',
     function($scope, $http, $location, flash, $routeParams) {
 
-        var baseUrl = 'http://laravel_angular.local/api';
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
 
@@ -179,7 +189,7 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
                 token: $scope.resetToken
             };
 
-            $http.post(baseUrl + '/password/reset', postData).success(function(data, status, headers, config) {
+            $http.post( '/api/password/reset', postData).success(function(data, status, headers, config) {
                 if(data.status == 'success'){
                     flash.setSuccessMessage(data.message);
                     $location.path('/user/login');
@@ -202,13 +212,12 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
 .controller('UserActivateController', ['$scope','$http','$location', 'flash', '$routeParams',
     function($scope, $http, $location, flash, $routeParams) {
 
-        var baseUrl = 'http://laravel_angular.local/api';
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
 
         $scope.activateToken = $routeParams.token;
 
-        $http.get(baseUrl + '/user/activate/'+$scope.activateToken).success(function(data, status, headers, config) {
+        $http.get('/api/user/activate/'+$scope.activateToken).success(function(data, status, headers, config) {
             if(data.status == 'success'){
                 flash.setSuccessMessage(data.message);
                 $location.path('/user/login');
@@ -225,11 +234,10 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
     }]
 )
 
-.controller('UserProfileController', ['$scope','$http','$location', 'flash', 'UserService',
-        'countries', 'languages',  'timezones', 'roles',
-    function($scope, $http, $location, flash, UserService, countries, languages, timezones, roles) {
+.controller('UserProfileController', ['$scope','$http','$location', 'flash', 'authenticationSvc',
+        'countries', 'languages',  'timezones', 'roles', 'user',
+    function($scope, $http, $location, flash, authenticationSvc, countries, languages, timezones, roles, user) {
 
-        var baseUrl = 'http://laravel_angular.local/api';
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
 
@@ -238,22 +246,20 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
         $scope.timezones = timezones;
         $scope.roles = roles;
 
-        $scope.user = UserService.getUser();
-        console.log($scope.user);
+        $scope.user = user;
 
         $scope.saveProfile = function(){
             var userData = $scope.user;
 
-            console.log(userData);
+            $http.post('/api/user/update-profile', userData).success(function(result) {
 
-            $http.post(baseUrl + '/user/update-profile', userData).success(function(data, status, headers, config) {
-
-                if(data.status == 'success'){
-                    $scope.successMsg = data.message;
+                if(result.status == 'success'){
+                    authenticationSvc.setUserInfo(result.data);
+                    $scope.successMsg = result.message;
                 }
                 else{
                     $scope.successMsg = '';
-                    $scope.errorMsg = data.message;
+                    $scope.errorMsg = result.message;
                 }
 
             }).error(function(data, status, headers, config) {

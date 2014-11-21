@@ -1,0 +1,55 @@
+<div class="container">
+
+    <div ng-include="'partials/message.html'"></div>
+
+    <div class="page-header">
+        <h3>Create Request</h3>
+    </div>
+
+    <form role="form" ng-submit="createRequest()" name='createRequestForm'>
+
+        <div class="form-group">
+            <label>Title</label>
+            <div class="row">
+                <div class="col-sm-4">
+                    <input class="form-control" ng-model="request.title" placeholder="Title" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="col-sm-4 ">Source Language</label>
+                <label class="col-sm-4 ">Destination Language</label>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+
+                    <select class="form-control" ng-model="request.src_lang_id">
+                        <option ng-repeat="aLanguage in languages" value="{{aLanguage.lang_id}}">{{aLanguage.lang_name}}</option>
+                    </select>
+
+                </div>
+                <div class="col-sm-4">
+                    <select class="form-control" ng-model="request.dest_lang_id">
+                        <option ng-repeat="aLanguage in languages" value="{{aLanguage.lang_id}}">{{aLanguage.lang_name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Country</label>
+            <div class="row">
+                <div class="col-sm-4">
+                    <select class="form-control" name="country" ng-model="request.country_id">
+                        <option ng-repeat="aCountry in countries" value="{{aCountry.country_id}}">{{aCountry.country_name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <br/>
+
+        <button type="submit" class="btn btn-warning">Create</button>
+    </form>
+</div>

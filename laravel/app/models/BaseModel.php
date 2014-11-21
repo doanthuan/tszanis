@@ -58,7 +58,7 @@ class BaseModel extends \Illuminate\Database\Eloquent\Model {
             return true;
         }
 
-        $this->setErrors($v->messages());
+        $this->setErrors($v->messages()->getMessages());
 
         return false;
     }

@@ -9,4 +9,6 @@
 class Country extends BaseModel{
     protected $table = 'country';
     protected $primaryKey = 'country_id';
+
+    protected $fillable = array('country_name');
 } 

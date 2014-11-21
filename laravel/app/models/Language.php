@@ -9,4 +9,6 @@
 class Language extends BaseModel{
     protected $table = 'language';
     protected $primaryKey = 'lang_id';
+
+    protected $fillable = array('lang_name', 'lang_code');
 } 
