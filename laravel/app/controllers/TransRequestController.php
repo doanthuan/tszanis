@@ -12,21 +12,37 @@ class TransRequestController extends \BaseController {
 		//
         $query = DB::table('request')
             ->select('request.*', 'lang1.lang_name as lang_name_src', 'lang2.lang_name as lang_name_dest',
-                'country.country_name', DB::raw(' CONCAT(user.first_name, \' \', user.last_name) as username'));
-        $result = $query
+                'country.country_name',
+                DB::raw(' CONCAT(creator.first_name, \' \', creator.last_name) as creator_name'),
+                DB::raw(' CONCAT(translator.first_name, \' \', translator.last_name) as translator_name')
+            );
+        $query
             ->join('language as lang1', 'request.src_lang_id', '=', 'lang1.lang_id')
             ->join('language as lang2', 'request.dest_lang_id', '=', 'lang2.lang_id')
             ->join('country', 'request.country_id', '=', 'country.country_id')
-            ->join('user', 'request.user_id', '=', 'user.user_id')
-            ->get();
+            ->join('user as creator', 'request.user_id', '=', 'creator.user_id')
+            ->leftJoin('user as translator', 'request.translator_id', '=', 'translator.user_id');
+
+        if(Input::has('user_id')){
+            $roleId = Input::get('role_id', 0);
+            if($roleId == Role::ROLE_REQUESTER){
+                $query->where('request.user_id', Input::get('user_id'));
+            }
+            else if($roleId == Role::ROLE_SERVICE_PROVIDER){
+                $query->where('request.translator_id', Input::get('user_id'));
+                $query->where('request.status', TransRequest::STATUS_ASSIGNED);
+            }
+        }
+        else{
+            $query->where('request.status', TransRequest::STATUS_CREATED);
+        }
+
+        $query->orderBy('request.request_id','DESC');
+
+
+        $result = $query->get();
 
         //$queries = DB::getQueryLog();
-
-//        echo "<pre>";
-//        print_r($queries);exit;
-
-
-
 
         return Response::json($result);
 	}
@@ -105,6 +121,62 @@ class TransRequestController extends \BaseController {
 	public function update($id)
 	{
 		//
+        $request = TransRequest::find($id);
+        if(!$request){
+            return \Responser::error('Can not find request record');
+        }
+
+        $status = Input::get('status');
+        if(!in_array($status, array(
+            TransRequest::STATUS_ASSIGNED,
+            TransRequest::STATUS_COMPLETED,
+            TransRequest::STATUS_CANCELED))){
+            return \Responser::error('Status is not valid');
+        }
+
+        $request->status = $status;
+
+
+        //prepare info for email
+        $user = $request->user;
+        $recipient = $user->email;
+        $dataEmail['first_name'] = $user->first_name;
+        $dataEmail['last_name'] = $user->last_name;
+
+        $dataEmail['requestUrl'] = \Config::get('app.angular_url').'request/view/'.$request->request_id;
+
+        if($status == TransRequest::STATUS_ASSIGNED){
+
+            $translatorId = Input::get('translator_id');
+            if(!$translatorId){
+                return \Responser::error('Invalid service provider');
+            }
+            $translator = User::find($translatorId);
+            $dataEmail['translator_name'] = $translator->first_name.' '.$translator->last_name;
+
+            Mail::send('emails.request.accept', $dataEmail, function($message) use($recipient)
+            {
+                $message->to($recipient)->subject('CompanyName | Your Request Acceptation');
+            });
+
+            $request->translator_id = $translatorId;
+            $message = 'Your request has been accepted';
+        }
+        else if($status == TransRequest::STATUS_COMPLETED){
+
+            Mail::send('emails.request.complete', $dataEmail, function($message) use($recipient)
+            {
+                $message->to($recipient)->subject('CompanyName | Your Request Complete');
+            });
+
+            $message = 'Your request has been completed';
+        }
+        else if($status == TransRequest::STATUS_CANCELED){
+            $message = 'Your request has been canceled';
+        }
+        $request->save();
+
+        return \Responser::success($message);
 	}
 
 

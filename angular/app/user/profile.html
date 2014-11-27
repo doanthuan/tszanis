@@ -25,10 +25,10 @@
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <input class="form-control" placeholder="Password" ng-model="password" name="password" type="password">
+                    <input class="form-control" placeholder="Password" ng-model="user.password" name="password" type="password">
                 </div>
                 <div class="col-sm-4">
-                    <input class="form-control" placeholder="Password Confirm" ng-model="password_confirm" name="password_confirm" type="password" data-password-verify="password">
+                    <input class="form-control" placeholder="Password Confirm" ng-model="password_confirm" name="password_confirm" type="password" data-password-verify="user.password">
                     <div ng-show="saveProfileForm.password_confirm.$error.passwordVerify" class="error">Confirmation password does not match.</div>
                 </div>
             </div>

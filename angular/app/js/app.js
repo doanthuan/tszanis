@@ -8,6 +8,7 @@ var app = angular.module('myApp', [
     'myApp.version',
     'myApp.services',
     'myApp.directives',
+    'myApp.filters'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/user/login'});
@@ -22,6 +23,7 @@ app.controller('AppController', ['$scope','$http','$location', 'flash', 'authent
 
         $scope.$on("$routeChangeSuccess", function(userInfo) {
             $scope.isLoggedIn = authenticationSvc.checkLogin();
+            $scope.userInfo = authenticationSvc.getUserInfo();
         });
 
         $scope.$on("$routeChangeError", function(event, current, previous, eventObj) {

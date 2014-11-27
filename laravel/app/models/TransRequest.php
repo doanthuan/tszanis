@@ -15,7 +15,7 @@ class TransRequest extends BaseModel{
     const STATUS_CREATED = 1;
     const STATUS_CANCELED = 2;
     const STATUS_ASSIGNED = 3;
-    const STATUS_COMPLETED = 3;
+    const STATUS_COMPLETED = 4;
 
     public function srcLanguage()
     {
@@ -35,5 +35,10 @@ class TransRequest extends BaseModel{
     public function user()
     {
         return $this->belongsTo('User', 'user_id', 'user_id');
+    }
+
+    public function translator()
+    {
+        return $this->belongsTo('User', 'translator_id', 'user_id');
     }
 } 

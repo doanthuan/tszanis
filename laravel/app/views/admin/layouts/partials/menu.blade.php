@@ -12,6 +12,7 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
+                <li><a href="{{url('admin/user')}}">Users</a></li>
                 <li><a href="{{url('admin/language')}}">Languages</a></li>
                 <li><a href="{{url('admin/time-zone')}}">Timezones</a></li>
                 <li><a href="{{url('admin/country')}}">Countries</a></li>

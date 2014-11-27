@@ -6,7 +6,21 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
   $routeProvider
   .when('/user/register', {
     templateUrl: 'user/register.html',
-    controller: 'UserRegistController'
+    controller: 'UserRegistController',
+      resolve: {
+          countries: function(MultiCountryLoader) {
+              return MultiCountryLoader();
+          },
+          languages: function(MultiLanguageLoader) {
+              return MultiLanguageLoader();
+          },
+          timezones: function(MultiTimeZoneLoader) {
+              return MultiTimeZoneLoader();
+          },
+          roles: function(MultiRoleLoader) {
+              return MultiRoleLoader();
+          }
+      }
   })
   .when('/user/login', {
       templateUrl: 'user/login.html',
@@ -94,39 +108,23 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
     }])
 
 .controller('UserRegistController', ['$scope','$http','$location', 'flash',
-    function($scope, $http, $location, flash) {
+        'countries', 'languages',  'timezones', 'roles',
+    function($scope, $http, $location, flash, countries, languages, timezones, roles) {
 
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
 
 
-        $http.get('/api/country/list').success(function(data, status, headers, config) {
-            $scope.countries = data.data;
-        });
-
-        $http.get('/api/language/list').success(function(data, status, headers, config) {
-            $scope.languages = data.data;
-        });
-
-        $http.get('/api/timezone/list').success(function(data, status, headers, config) {
-            $scope.timezones = data.data;
-
-        });
+        $scope.countries = countries;
+        $scope.languages = languages;
+        $scope.timezones = timezones;
+        $scope.roles = roles;
 
 
         $scope.saveUser = function(){
-            var postData = {
-                email: $scope.email,
-                password: $scope.password,
-                first_name: $scope.first_name,
-                last_name: $scope.last_name,
-                phone: $scope.phone,
-                timezone_id: $scope.timezone,
-                lang_id: $scope.language,
-                country_id: $scope.country
-            };
+            var userData = $scope.user;
 
-            $http.post('/api/user/register', postData).success(function(data, status, headers, config) {
+            $http.post('/api/user/register', userData).success(function(data, status, headers, config) {
 
                 if(data.status == 'success'){
                     flash.setSuccessMessage(data.message);

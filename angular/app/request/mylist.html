@@ -3,7 +3,7 @@
     <div ng-include="'partials/message.html'"></div>
 
     <div class="page-header">
-        <h3>All Open Requests</h3>
+        <h3>My Requests</h3>
     </div>
 
     <!--<ul class="requests">-->
@@ -21,6 +21,7 @@
             <th st-sort="lang_name_dest">Destination Language</th>
             <th st-sort="country_name">Country</th>
             <th st-sort="username">Creator</th>
+            <th st-sort="status">Status</th>
             <th st-sort="created_at">Created Date</th>
             <th></th>
         </tr>
@@ -33,10 +34,10 @@
             <td>{{request.lang_name_dest}}</td>
             <td>{{request.country_name}}</td>
             <td>{{request.creator_name}}</td>
+            <td>{{request.status | requestStatus}}</td>
             <td>{{request.created_at}}</td>
             <td>
-                <button class="btn btn-warning" ng-show="userInfo.role_id == 3" ng-click="acceptRequest(request.request_id)">Accept</button>
-                <button class="btn btn-danger" ng-show="userInfo.role_id == 4" ng-click="cancelRequest(request.request_id)">Cancel</button>
+                <button class="btn btn-warning" ng-show="request.status == 3 && userInfo.role_id == 3" ng-click="completeRequest(request.request_id)">Completed</button>
             </td>
         </tr>
         </tbody>
@@ -49,6 +50,5 @@
         <!--</div>-->
     <!--</div>-->
 
-    <br/>
-    <button class="btn btn-warning" ng-show="userInfo.role_id == 4" onclick="window.location = '#/request/create'">Make Request</button>
+    <!--<button class="btn btn-warning" onclick="window.location = '#/request/create'">Make Request</button>-->
 </div>

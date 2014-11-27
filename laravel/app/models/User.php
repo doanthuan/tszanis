@@ -38,4 +38,25 @@ class User extends BaseModel implements UserInterface, RemindableInterface {
     {
         return $this->belongsToMany('Language', 'user_lang', 'user_id', 'language_id');
     }
+
+    public static function getStatusString($status)
+    {
+        switch($status)
+        {
+            case static::STATUS_PENDING:
+                return 'Pending';
+            case static::STATUS_VERIFIED:
+                return 'Activated';
+        }
+        return 'Activated';
+    }
+
+    public static function getStatusList()
+    {
+        $list = array();
+        for($i = 1; $i <= 2; $i++){
+            $list[$i] = static::getStatusString($i);
+        }
+        return $list;
+    }
 }

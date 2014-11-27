@@ -54,6 +54,21 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
       templateUrl:'request/view.html'
   })
 
+  .when('/request/mylist', {
+      templateUrl: 'request/mylist.html',
+      controller: 'MyListRequestCtrl',
+      resolve: {
+          auth: ["$q", "authenticationSvc", function($q, authenticationSvc) {
+              var userInfo = authenticationSvc.getUserInfo();
+              if (userInfo) {
+                  return $q.when(userInfo);
+              } else {
+                  return $q.reject({ authenticated: false });
+              }
+          }]
+      }
+  })
+
   ;
 }])
 
@@ -86,13 +101,84 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
     ]
 )
 
-.controller('ListRequestCtrl', ['$scope','$http','$location', 'flash', 'authenticationSvc',  'requests',
-    function($scope, $http, $location, flash, authenticationSvc, requests ) {
+.controller('ListRequestCtrl', ['$scope','$http','$route', '$location', 'flash', 'authenticationSvc', 'requests', 'TransRequest',
+    function($scope, $http, $route, $location, flash, authenticationSvc, requests, TransRequest ) {
 
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
 
         $scope.requests = requests;
+
+        $scope.acceptRequest = function(requestId){
+            var requestData = {
+                id: requestId,
+                status: 3,
+                translator_id: $scope.$parent.userInfo.user_id
+            };
+
+
+            TransRequest.update(requestData, function(result) {
+                flash.setSuccessMessage(result.message);
+                $route.reload();
+            }, function(error) {
+                $scope.successMsg = '';
+                $scope.errorMsg = error;
+            });
+        };
+
+        $scope.cancelRequest = function(requestId){
+            var requestData = {
+                id: requestId,
+                status: 2
+            };
+
+
+            TransRequest.update(requestData, function(result) {
+                flash.setSuccessMessage(result.message);
+                $route.reload();
+            }, function(error) {
+                $scope.successMsg = '';
+                $scope.errorMsg = error;
+            });
+        };
+
+    }
+]
+)
+
+.controller('MyListRequestCtrl', ['$scope','$http', '$route','$location', 'flash', 'authenticationSvc', 'TransRequest',
+    function($scope, $http, $route, $location, flash, authenticationSvc, TransRequest ) {
+
+        $scope.errorMsg = flash.getErrorMessage();
+        $scope.successMsg = flash.getSuccessMessage();
+
+        var params = {
+            user_id: $scope.$parent.userInfo.user_id,
+            role_id: $scope.$parent.userInfo.role_id
+        };
+
+        TransRequest.query( params ,function(requests) {
+            $scope.requests = requests;
+        }, function(error) {
+            $scope.errorMsg = error;
+        });
+
+
+        $scope.completeRequest = function(requestId){
+            var requestData = {
+                id: requestId,
+                status: 4
+            };
+
+
+            TransRequest.update(requestData, function(result) {
+                flash.setSuccessMessage(result.message);
+                $route.reload();
+            }, function(error) {
+                $scope.successMsg = '';
+                $scope.errorMsg = error;
+            });
+        };
 
     }
 ]
@@ -120,7 +206,12 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
 
 requestModule.factory('TransRequest', ['$resource',
     function($resource) {
-        return $resource('/api/request/:id', {id: '@id'});
+        return $resource('/api/request/:id', {id: '@id'},{
+                update: {
+                    method: 'PUT'
+                }
+            }
+        );
     }]
 );
 
@@ -128,10 +219,10 @@ requestModule.factory('MultiRequestLoader', ['TransRequest', '$q',
     function(TransRequest, $q) {
         return function() {
             var delay = $q.defer();
-            TransRequest.query(function(countries) {
-                delay.resolve(countries);
+            TransRequest.query(function(requests) {
+                delay.resolve(requests);
             }, function() {
-                delay.reject('Unable to fetch requestes');
+                delay.reject('Unable to fetch requests');
             });
             return delay.promise;
         };

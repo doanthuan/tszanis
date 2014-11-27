@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('hello');
-});
 
 Route::controller('user', 'UserController');
 
@@ -29,6 +25,14 @@ Route::controller('country', 'CountryController');
 Route::controller('role', 'RoleController');
 
 Route::resource('request', 'TransRequestController');
+
+/*
+|--------------------------------------------------------------------------
+| Admin Controllers
+|--------------------------------------------------------------------------
+*/
+
+Route::controller('admin/user', 'AdminUserController');
 
 Route::controller('admin/language', 'AdminLanguageController');
 

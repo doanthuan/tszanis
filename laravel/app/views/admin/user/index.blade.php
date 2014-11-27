@@ -2,6 +2,6 @@
 
 @section('content')
 
-{{ (new AdminAccountGrid())->toHtml() }}
+{{ (new AdminUserGrid())->toHtml() }}
 
 @stop

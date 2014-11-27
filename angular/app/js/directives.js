@@ -3,23 +3,28 @@
  */
 var directives = angular.module('myApp.directives', []);
 
-directives.directive('butterbar', ['$rootScope',
-    function($rootScope) {
+directives.directive('loading',   ['$http' ,function ($http)
+    {
         return {
-            link: function(scope, element, attrs) {
-                element.modal('hide');
-                $rootScope.$on('$routeChangeStart', function() {
-                    //element.removeClass('hide');
-                    element.modal('show');
-                });
-                $rootScope.$on('$routeChangeSuccess', function() {
-                    //element.addClass('hide');
-                    element.modal('hide');
+            restrict: 'A',
+            link: function (scope, elm, attrs)
+            {
+                scope.isLoading = function () {
+                    return $http.pendingRequests.length > 0;
+                };
+
+                scope.$watch(scope.isLoading, function (v)
+                {
+                    if(v){
+                        elm.modal('show');
+                    }else{
+                        elm.modal('hide');
+                    }
                 });
             }
         };
-    }]);
 
+    }]);
 
 directives.directive("passwordVerify", function() {
     return {
@@ -52,3 +57,20 @@ directives.directive("passwordVerify", function() {
         }
     };
 });
+
+directives.directive('butterbar', ['$rootScope',
+    function($rootScope) {
+        return {
+            link: function(scope, element, attrs) {
+                element.modal('hide');
+                $rootScope.$on('$routeChangeStart', function() {
+                    //element.removeClass('hide');
+                    element.modal('show');
+                });
+                $rootScope.$on('$routeChangeSuccess', function() {
+                    //element.addClass('hide');
+                    element.modal('hide');
+                });
+            }
+        };
+    }]);

@@ -1,5 +1,6 @@
 /* app css stylesheet */
 
+/* for menu */
 .menu {
   list-style: none;
   border-bottom: 0.1em solid black;
@@ -75,4 +76,8 @@ input.ng-valid.ng-dirty {
     left: 40%;
     width: 300px;
     font-size: 30px;
+}
+
+.request-detail .row{
+    margin-bottom: 20px;
 }

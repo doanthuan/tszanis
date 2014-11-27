@@ -7,12 +7,13 @@
     </div>
 
     <form role="form" ng-submit="saveUser()" name='saveUserForm'>
+
         <div class="form-group">
             <label>Email address</label>
             <div class="row">
                 <div class="col-sm-4">
-                    <input class="form-control email" ng-model="email" type="email" name="email" ng-remote-validate="/api/user/check-email-exist"  required>
-                    <span ng-show="saveUserForm.email.$error.email" class="error">This is not a valid email.</span>
+                    <input class="form-control email" ng-model="user.email" type="email" name="email" ng-remote-validate="/api/user/check-email-exist"  required>
+                    <span ng-show="saveUserForm.email.$error.user.email" class="error">This is not a valid email.</span>
                     <span ng-show="saveUserForm.email.$error.ngRemoteValidate" class="error">Email address is already existed.</span>
                 </div>
             </div>
@@ -25,10 +26,10 @@
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <input class="form-control" placeholder="Password" ng-model="password" name="password" type="password"  required>
+                    <input class="form-control" placeholder="Password" ng-model="user.password" name="password" type="password">
                 </div>
                 <div class="col-sm-4">
-                    <input class="form-control" placeholder="Password Confirm" ng-model="password_confirm" name="password_confirm" type="password" required data-password-verify="password">
+                    <input class="form-control" placeholder="Password Confirm" ng-model="password_confirm" name="password_confirm" type="password" data-password-verify="user.password">
                     <div ng-show="saveUserForm.password_confirm.$error.passwordVerify" class="error">Confirmation password does not match.</div>
                 </div>
             </div>
@@ -36,15 +37,15 @@
 
         <div class="form-group">
             <div class="row">
-                <label class="col-sm-4 " for="first_name">First Name</label>
-                <label class="col-sm-4 " for="last_name">Last Name</label>
+                <label class="col-sm-4 ">First Name</label>
+                <label class="col-sm-4 ">Last Name</label>
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <input class="form-control" placeholder="Enter first name" ng-model="first_name" id="first_name" type="text" required>
+                    <input class="form-control" ng-model="user.first_name" type="text" required>
                 </div>
                 <div class="col-sm-4">
-                    <input class="form-control" placeholder="Enter last name" ng-model="last_name" id="last_name" type="text" required>
+                    <input class="form-control" ng-model="user.last_name" type="text" required>
                 </div>
             </div>
         </div>
@@ -56,16 +57,15 @@
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <input class="form-control" placeholder="Enter phone number" ng-model="phone" type="text" id="phone" required>
+                    <input class="form-control" ng-model="user.phone" type="text" required>
                 </div>
                 <div class="col-sm-4">
-                    <select class="form-control" name="timezone" ng-model="timezone">
-                        <option ng-repeat="aTimezone in timezones" value="{{aTimezone.timezone_id}}">{{aTimezone.value}}</option>
+                    <select class="form-control" name="timezone" ng-model="user.timezone_id">
+                        <option  ng-repeat="aTimezone in timezones" value="{{aTimezone.timezone_id}}">{{aTimezone.value}}</option>
                     </select>
                 </div>
             </div>
         </div>
-
 
         <div class="form-group">
             <div class="row">
@@ -74,26 +74,26 @@
             </div>
             <div class="row">
                 <div class="col-sm-4">
-                    <select class="form-control" name="language" ng-model="language">
+
+                    <select class="form-control" ng-model="user.languages" multiple>
                         <option ng-repeat="aLanguage in languages" value="{{aLanguage.lang_id}}">{{aLanguage.lang_name}}</option>
                     </select>
+
                 </div>
                 <div class="col-sm-4">
-                    <select class="form-control" name="country" ng-model="country">
-                        <option ng-selected="{{aCountry.country_id == country}}" ng-repeat="aCountry in countries" value="{{aCountry.country_id}}">{{aCountry.country_name}}</option>
+                    <select class="form-control" name="country" ng-model="user.country_id">
+                        <option ng-repeat="aCountry in countries" value="{{aCountry.country_id}}">{{aCountry.country_name}}</option>
                     </select>
                 </div>
             </div>
         </div>
 
-
         <div class="form-group">
-            <label for="role">Role</label>
+            <label>Role</label>
             <div class="row">
                 <div class="col-sm-4">
-                    <select class="form-control" ng-model="role" id="role">
-                        <option value="provider">Requester</option>
-                        <option value="requester">Service Provider</option>
+                    <select class="form-control" name="country" ng-model="user.role_id">
+                        <option ng-repeat="aRole in roles" value="{{aRole.role_id}}">{{aRole.role_name}}</option>
                     </select>
                 </div>
             </div>

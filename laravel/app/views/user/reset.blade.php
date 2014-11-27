@@ -1,7 +1,3 @@
-<?php
-Phaser::User();
-?>
-
 @extends('user.layouts.main')
 
 @section('content')
