@@ -6,7 +6,7 @@
  * Time: 4:39 PM
  */
 
-class TimeZone extends BaseModel{
+class TimeZone extends \Goxob\Core\Model\Model{
     protected $table = 'timezone';
     protected $primaryKey = 'timezone_id';
 

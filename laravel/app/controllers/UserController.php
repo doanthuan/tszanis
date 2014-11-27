@@ -56,21 +56,28 @@ class UserController extends BaseController {
         }
     }
 
-    public function getRegister()
-    {
-        return View::make('user.register');
-    }
-
     public function postRegister()
     {
         $validator = Validator::make(Input::all(), User::$rules);
 
         if ($validator->passes()) {
+
+            //check role_id != 1,2 ( super admin, admin )
+            $roleId = Input::get('role_id');
+            if($roleId == 1 || $roleId == 2){
+                return Responser::error('This role is not allowed');
+            }
+
+
             $user = new User;
-            $user->fill(Input::all());
-            $user->password = Hash::make(Input::get('password'));
+            $user->setData(Input::all());
             $user->status = User::STATUS_PENDING;
             $user->save();
+            if(Input::has('languages')){
+                $languages = Input::get('languages');
+                $user->languages()->detach();
+                $user->languages()->attach($languages);
+            }
 
             //send email
             $data['first_name'] = Input::get('first_name');
@@ -79,9 +86,11 @@ class UserController extends BaseController {
             $token = Crypt::encrypt($recipient);
 
             $data['url'] = \Config::get('app.angular_url').'user/activate/'.$token;
-            Mail::send('emails.user.register', $data, function($message) use($recipient)
+
+            $subject = EmailTemplate::where('file', 'user/register.blade.php')->first()->subject;
+            Mail::send('emails.user.register', $data, function($message) use($recipient, $subject)
             {
-                $message->to($recipient)->subject('Welcome!');
+                $message->to($recipient)->subject($subject);
             });
 
             return \Responser::success('Thank you for your registering. Please login to your email and activate your account');
@@ -125,17 +134,13 @@ class UserController extends BaseController {
         if ($user->validate(Input::all())) {
 
             $user->setData(Input::all());
-            if(Input::has('password')){
-                $user->password = Hash::make(Input::get('password'));
-            }
+            $user->save();
 
             if(Input::has('languages')){
                 $languages = Input::get('languages');
                 $user->languages()->detach();
                 $user->languages()->attach($languages);
             }
-
-            $user->save();
 
             $user->languages = $user->languages()->lists('user_lang.language_id');
 

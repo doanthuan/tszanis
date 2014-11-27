@@ -40,6 +40,8 @@ Route::controller('admin/time-zone', 'AdminTimeZoneController');
 
 Route::controller('admin/country', 'AdminCountryController');
 
+Route::controller('admin/email-template', 'AdminEmailTemplateController');
+
 /*
 |--------------------------------------------------------------------------
 | Admin Auth

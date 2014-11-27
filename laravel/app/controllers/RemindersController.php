@@ -19,9 +19,10 @@ class RemindersController extends BaseController {
 	 */
 	public function postRemind()
 	{
-        $response = Password::remind(Input::only('email'), function($message)
+        $subject = EmailTemplate::where('file', 'user/reminder.blade.php')->first()->subject;
+        $response = Password::remind(Input::only('email'), function($message) use($subject)
         {
-            $message->subject('Password Reminder');
+            $message->subject($subject);
         });
 
 		switch ($response)

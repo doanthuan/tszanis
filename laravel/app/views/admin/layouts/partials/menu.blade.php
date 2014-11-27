@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Admin Area</a>
+            <a class="navbar-brand" href="#">Admin Panel</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -16,6 +16,7 @@
                 <li><a href="{{url('admin/language')}}">Languages</a></li>
                 <li><a href="{{url('admin/time-zone')}}">Timezones</a></li>
                 <li><a href="{{url('admin/country')}}">Countries</a></li>
+                <li><a href="{{url('admin/email-template')}}">Email Templates</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{{url('admin/logout')}}">Log Out</a></li>

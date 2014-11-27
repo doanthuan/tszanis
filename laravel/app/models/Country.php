@@ -6,7 +6,7 @@
  * Time: 4:39 PM
  */
 
-class Country extends BaseModel{
+class Country extends \Goxob\Core\Model\Model{
     protected $table = 'country';
     protected $primaryKey = 'country_id';
 

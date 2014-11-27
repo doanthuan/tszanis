@@ -6,7 +6,7 @@
  * Time: 4:39 PM
  */
 
-class Role extends BaseModel{
+class Role extends \Goxob\Core\Model\Model{
     protected $table = 'role';
     protected $primaryKey = 'role_id';
 

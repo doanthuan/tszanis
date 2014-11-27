@@ -6,7 +6,7 @@
  * Time: 4:39 PM
  */
 
-class Language extends BaseModel{
+class Language extends \Goxob\Core\Model\Model{
     protected $table = 'language';
     protected $primaryKey = 'lang_id';
 

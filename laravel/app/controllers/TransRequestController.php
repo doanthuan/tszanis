@@ -154,9 +154,10 @@ class TransRequestController extends \BaseController {
             $translator = User::find($translatorId);
             $dataEmail['translator_name'] = $translator->first_name.' '.$translator->last_name;
 
-            Mail::send('emails.request.accept', $dataEmail, function($message) use($recipient)
+            $subject = EmailTemplate::where('file', 'request/accept.blade.php')->first()->subject;
+            Mail::send('emails.request.accept', $dataEmail, function($message) use($recipient, $subject)
             {
-                $message->to($recipient)->subject('CompanyName | Your Request Acceptation');
+                $message->to($recipient)->subject($subject);
             });
 
             $request->translator_id = $translatorId;
@@ -164,9 +165,10 @@ class TransRequestController extends \BaseController {
         }
         else if($status == TransRequest::STATUS_COMPLETED){
 
-            Mail::send('emails.request.complete', $dataEmail, function($message) use($recipient)
+            $subject = EmailTemplate::where('file', 'request/complete.blade.php')->first()->subject;
+            Mail::send('emails.request.complete', $dataEmail, function($message) use($recipient, $subject)
             {
-                $message->to($recipient)->subject('CompanyName | Your Request Complete');
+                $message->to($recipient)->subject($subject);
             });
 
             $message = 'Your request has been completed';

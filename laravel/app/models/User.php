@@ -5,7 +5,7 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
-class User extends BaseModel implements UserInterface, RemindableInterface {
+class User extends \Goxob\Core\Model\Model implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;
 
@@ -37,6 +37,24 @@ class User extends BaseModel implements UserInterface, RemindableInterface {
     public function languages()
     {
         return $this->belongsToMany('Language', 'user_lang', 'user_id', 'language_id');
+    }
+
+    public function setData($input)
+    {
+        if(empty($input)){
+            return;
+        }
+
+        parent::setData($input);
+
+        if(!empty($input['password']))
+        {
+            $this->password = Hash::make($input['password']);
+        }
+
+        if(!empty($input['languages'])){
+
+        }
     }
 
     public static function getStatusString($status)

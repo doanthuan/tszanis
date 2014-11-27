@@ -6,7 +6,7 @@
  * Time: 4:39 PM
  */
 
-class TransRequest extends BaseModel{
+class TransRequest extends \Goxob\Core\Model\Model{
     protected $table = 'request';
     protected $primaryKey = 'request_id';
 
