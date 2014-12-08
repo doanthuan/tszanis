@@ -6,7 +6,7 @@ var myAppServices = angular.module('myApp.services', ['ngResource']);
 
 myAppServices.factory('Country', ['$resource',
     function($resource) {
-        return $resource('/api/country/:id', {id: '@id'});
+        return $resource(APIURL +'/country/:id', {id: '@id'});
 }]);
 
 myAppServices.factory('MultiCountryLoader', ['Country', '$q',
@@ -24,7 +24,7 @@ myAppServices.factory('MultiCountryLoader', ['Country', '$q',
 
 myAppServices.factory('Language', ['$resource',
     function($resource) {
-        return $resource('/api/language/:id', {id: '@id'});
+        return $resource(APIURL+'/language/:id', {id: '@id'});
     }]);
 
 myAppServices.factory('MultiLanguageLoader', ['Language', '$q',
@@ -42,7 +42,7 @@ myAppServices.factory('MultiLanguageLoader', ['Language', '$q',
 
 myAppServices.factory('TimeZone', ['$resource',
     function($resource) {
-        return $resource('/api/timezone/:id', {id: '@id'});
+        return $resource(APIURL+'/timezone/:id', {id: '@id'});
     }]);
 
 myAppServices.factory('MultiTimeZoneLoader', ['TimeZone', '$q',
@@ -61,7 +61,7 @@ myAppServices.factory('MultiTimeZoneLoader', ['TimeZone', '$q',
 
 myAppServices.factory('Role', ['$resource',
     function($resource) {
-        return $resource('/api/role/:id', {id: '@id'});
+        return $resource(APIURL+'/role/:id', {id: '@id'});
     }]);
 
 myAppServices.factory('MultiRoleLoader', ['Role', '$q',
@@ -97,7 +97,7 @@ myAppServices.factory("authenticationSvc", function($http, $q, $window) {
             password: password
         };
 
-        $http.post('/api/user/login', postData).success(function(result) {
+        $http.post(APIURL+'/user/login', postData).success(function(result) {
             if(result.status == 'success'){
                 userInfo = result.data;
                 $window.sessionStorage["userInfo"] = JSON.stringify(userInfo);
@@ -117,7 +117,7 @@ myAppServices.factory("authenticationSvc", function($http, $q, $window) {
     function logout() {
         var deferred = $q.defer();
 
-        $http.get('/api/user/logout').success(function(result) {
+        $http.get(APIURL+'/user/logout').success(function(result) {
             if(result.status == 'success'){
                 $window.sessionStorage["userInfo"] = null;
                 userInfo = null;
@@ -159,3 +159,22 @@ myAppServices.factory("authenticationSvc", function($http, $q, $window) {
         setUserInfo: setUserInfo
     };
 });
+
+
+myAppServices.factory('Specialty', ['$resource',
+    function($resource) {
+        return $resource(APIURL +'/specialty/:id', {id: '@id'});
+    }]);
+
+myAppServices.factory('MultiSpecialtyLoader', ['Specialty', '$q',
+    function(Specialty, $q) {
+        return function() {
+            var delay = $q.defer();
+            Specialty.query(function(specs) {
+                delay.resolve(specs);
+            }, function() {
+                delay.reject('Unable to fetch specialties');
+            });
+            return delay.promise;
+        };
+    }]);

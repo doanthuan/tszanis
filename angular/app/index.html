@@ -31,8 +31,8 @@
                   <li ng-show="!isLoggedIn"><a href="#/user/login">Login</a></li>
                   <li ng-show="!isLoggedIn"><a href="#/user/register">SignUp</a></li>
                   <li ng-show="isLoggedIn"><a href="#/request/list">All Open Requests</a></li>
-                  <li ng-show="userInfo.role_id == 3"><a href="#/request/mylist">My Working Requests</a></li>
-                  <li ng-show="userInfo.role_id == 4"><a href="#/request/mylist">My Requests</a></li>
+                  <li ng-show="userInfo.roles.indexOf(3) >= 0"><a href="#/request/workinglist">Working Requests</a></li>
+                  <li ng-show="userInfo.roles.indexOf(4) >= 0"><a href="#/request/mylist">My Requests</a></li>
               </ul>
 
 

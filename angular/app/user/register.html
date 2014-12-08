@@ -12,7 +12,7 @@
             <label>Email address</label>
             <div class="row">
                 <div class="col-sm-4">
-                    <input class="form-control email" ng-model="user.email" type="email" name="email" ng-remote-validate="/api/user/check-email-exist"  required>
+                    <input class="form-control email" ng-model="user.email" id="email" type="email" name="email" ng-remote-validate="/user/check-email-exist"  required>
                     <span ng-show="saveUserForm.email.$error.user.email" class="error">This is not a valid email.</span>
                     <span ng-show="saveUserForm.email.$error.ngRemoteValidate" class="error">Email address is already existed.</span>
                 </div>
@@ -60,8 +60,8 @@
                     <input class="form-control" ng-model="user.phone" type="text" required>
                 </div>
                 <div class="col-sm-4">
-                    <select class="form-control" name="timezone" ng-model="user.timezone_id">
-                        <option  ng-repeat="aTimezone in timezones" value="{{aTimezone.timezone_id}}">{{aTimezone.value}}</option>
+                    <select class="form-control" name="timezone" ng-model="user.timezone_id" ng-init="user.timezone_id = timezones[0].timezone_id">
+                        <option ng-repeat="aTimezone in timezones" value="{{aTimezone.timezone_id}}">{{aTimezone.value}}</option>
                     </select>
                 </div>
             </div>
@@ -75,13 +75,13 @@
             <div class="row">
                 <div class="col-sm-4">
 
-                    <select class="form-control" ng-model="user.languages" multiple>
+                    <select class="form-control" ng-model="user.languages" id="user-lang" ng-init="user.languages = [languages[0].lang_id]">
                         <option ng-repeat="aLanguage in languages" value="{{aLanguage.lang_id}}">{{aLanguage.lang_name}}</option>
                     </select>
 
                 </div>
                 <div class="col-sm-4">
-                    <select class="form-control" name="country" ng-model="user.country_id">
+                    <select class="form-control" name="country" ng-model="user.country_id" ng-init="user.country_id = countries[0].country_id">
                         <option ng-repeat="aCountry in countries" value="{{aCountry.country_id}}">{{aCountry.country_name}}</option>
                     </select>
                 </div>
@@ -92,7 +92,7 @@
             <label>Role</label>
             <div class="row">
                 <div class="col-sm-4">
-                    <select class="form-control" name="country" ng-model="user.role_id">
+                    <select class="form-control" ng-model="user.roles" ng-change="toggleMultiLang()" multiple>
                         <option ng-repeat="aRole in roles" value="{{aRole.role_id}}">{{aRole.role_name}}</option>
                     </select>
                 </div>
@@ -102,3 +102,10 @@
         <button type="submit" class="btn btn-warning">Register</button>
     </form>
 </div>
+<script>
+    $(document).ready(function(){
+        var checkEmailUrl = $('#email').attr('ng-remote-validate');
+        checkEmailUrl = APIURL + checkEmailUrl;
+        $('#email').attr('ng-remote-validate', checkEmailUrl);
+    })
+</script>

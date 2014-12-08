@@ -44,6 +44,7 @@ class UserController extends BaseController {
                 //$user->last_login = date('Y-m-d H:i:s');
                 //$user->save();
                 $user->languages = $user->languages()->lists('user_lang.language_id');
+                $user->roles = $user->roles()->lists('user_role.roleid');
 
                 return \Responser::success('Login successfully.', $user);
             }else{
@@ -62,13 +63,6 @@ class UserController extends BaseController {
 
         if ($validator->passes()) {
 
-            //check role_id != 1,2 ( super admin, admin )
-            $roleId = Input::get('role_id');
-            if($roleId == 1 || $roleId == 2){
-                return Responser::error('This role is not allowed');
-            }
-
-
             $user = new User;
             $user->setData(Input::all());
             $user->status = User::STATUS_PENDING;
@@ -77,6 +71,18 @@ class UserController extends BaseController {
                 $languages = Input::get('languages');
                 $user->languages()->detach();
                 $user->languages()->attach($languages);
+            }
+
+            if(Input::has('roles')){
+                $roles = Input::get('roles');
+
+                if(in_array(1, $roles) || in_array(2, $roles)){//( super admin, admin )
+                    $user->delete();
+                    return Responser::error('This role is not allowed');
+                }
+
+                $user->roles()->detach();
+                $user->roles()->attach($roles);
             }
 
             //send email
@@ -106,25 +112,13 @@ class UserController extends BaseController {
         {
             $user = Auth::user();
             $user->languages = $user->languages()->lists('user_lang.language_id');
+            $user->roles = $user->roles()->lists('user_role.roleid');
 
             return \Responser::data( $user);
         }
         else{
             return \Responser::error('Your session has expired');
         }
-    }
-
-    public function getProfile()
-    {
-        // If logged in, redirect customer
-        if (!Auth::check())
-        {
-            return Redirect::to( 'user/login' );
-        }
-        $user = Auth::user();
-        $data['user'] = $user;
-
-        return View::make('user.profile', $data);
     }
 
     public function postUpdateProfile()
@@ -142,7 +136,14 @@ class UserController extends BaseController {
                 $user->languages()->attach($languages);
             }
 
+            if(Input::has('roles')){
+                $roles = Input::get('roles');
+                $user->roles()->detach();
+                $user->roles()->attach($roles);
+            }
+
             $user->languages = $user->languages()->lists('user_lang.language_id');
+            $user->roles = $user->roles()->lists('user_role.roleid');
 
             return \Responser::success('Your profile has been updated', $user);
 

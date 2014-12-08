@@ -11,7 +11,7 @@
             <label>Email address</label>
             <div class="row">
                 <div class="col-sm-4">
-                    <input class="form-control email" ng-model="user.email" type="email" name="email" ng-remote-validate="/api/user/check-email-exist"  required>
+                    <input class="form-control email" ng-model="user.email" id="email" type="email" name="email" ng-remote-validate="/user/check-email-exist"  required>
                     <span ng-show="saveProfileForm.email.$error.user.email" class="error">This is not a valid email.</span>
                     <span ng-show="saveProfileForm.email.$error.ngRemoteValidate" class="error">Email address is already existed.</span>
                 </div>
@@ -75,7 +75,7 @@
             <div class="row">
                 <div class="col-sm-4">
 
-                    <select class="form-control" ng-model="user.languages" multiple>
+                    <select class="form-control" ng-model="user.languages" id="user-lang" >
                         <option ng-selected="{{user.languages.indexOf(aLanguage.lang_id) >= 0}}" ng-repeat="aLanguage in languages" value="{{aLanguage.lang_id}}">{{aLanguage.lang_name}}</option>
                     </select>
 
@@ -93,7 +93,7 @@
             <label>Role</label>
             <div class="row">
                 <div class="col-sm-4">
-                    <select class="form-control" name="country" ng-model="user.role_id">
+                    <select class="form-control" name="country" ng-model="user.roles" ng-change="toggleMultiLang()">
                         <option ng-selected="{{aRole.role_id == user.role_id}}" ng-repeat="aRole in roles" value="{{aRole.role_id}}">{{aRole.role_name}}</option>
                     </select>
                 </div>
@@ -105,3 +105,10 @@
         <button type="submit" class="btn btn-warning">Save Changes</button>
     </form>
 </div>
+<script>
+    $(document).ready(function(){
+        var checkEmailUrl = $('#email').attr('ng-remote-validate');
+        checkEmailUrl = APIURL + checkEmailUrl;
+        $('#email').attr('ng-remote-validate', checkEmailUrl);
+    })
+</script>

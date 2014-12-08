@@ -14,6 +14,6 @@ return array(
 	*/
 
 	'debug' => true,
-    'angular_url' => 'http://laravel_angular.local/app/#/',
+    'angular_url' => 'http://laravel_angular.local/#/',
 
 );

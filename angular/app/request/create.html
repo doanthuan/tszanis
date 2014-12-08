@@ -25,13 +25,13 @@
             <div class="row">
                 <div class="col-sm-4">
 
-                    <select class="form-control" ng-model="request.src_lang_id">
+                    <select class="form-control" ng-model="request.src_lang_id" ng-init="request.src_lang_id = languages[0].lang_id">
                         <option ng-repeat="aLanguage in languages" value="{{aLanguage.lang_id}}">{{aLanguage.lang_name}}</option>
                     </select>
 
                 </div>
                 <div class="col-sm-4">
-                    <select class="form-control" ng-model="request.dest_lang_id">
+                    <select class="form-control" ng-model="request.dest_lang_id" ng-init="request.dest_lang_id = languages[0].lang_id">
                         <option ng-repeat="aLanguage in languages" value="{{aLanguage.lang_id}}">{{aLanguage.lang_name}}</option>
                     </select>
                 </div>
@@ -42,8 +42,19 @@
             <label>Country</label>
             <div class="row">
                 <div class="col-sm-4">
-                    <select class="form-control" name="country" ng-model="request.country_id">
+                    <select class="form-control" name="country" ng-model="request.country_id" ng-init="request.country_id = countries[0].country_id">
                         <option ng-repeat="aCountry in countries" value="{{aCountry.country_id}}">{{aCountry.country_name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Specialty</label>
+            <div class="row">
+                <div class="col-sm-4">
+                    <select class="form-control" name="specialty" ng-model="request.spec_id" ng-init="request.spec_id = specs[0].spec_id">
+                        <option ng-repeat="aSpec in specs" value="{{aSpec.spec_id}}">{{aSpec.spec_name}}</option>
                     </select>
                 </div>
             </div>

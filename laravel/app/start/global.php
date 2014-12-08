@@ -78,6 +78,29 @@ App::error(function(Exception $exception, $code)
     }
 });
 
+
+//App::before(function($request)
+//{
+//    if($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+//        $statusCode = 204;
+//        $headers = [
+//            'Access-Control-Allow-Origin'      => '*',
+//            'Access-Control-Allow-Methods'     => 'GET, POST, PUT, DELETE, OPTIONS',
+//            'Access-Control-Allow-Headers'     => 'Content-Type'
+//        ];
+//
+//        return Response::make(null, $statusCode, $headers);
+//    }
+//});
+//
+//App::after(function($request, $response)
+//{
+//    $response->headers->set('Access-Control-Allow-Origin', '*');
+//    $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//    $response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
+//    return $response;
+//});
+
 /*
 |--------------------------------------------------------------------------
 | Maintenance Mode Handler

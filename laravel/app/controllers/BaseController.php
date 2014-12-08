@@ -2,6 +2,15 @@
 
 class BaseController extends Controller {
 
+    public function __construct()
+    {
+        if (Auth::check())
+        {
+            $ipAddress = $_SERVER['REMOTE_ADDR'];
+            echo $ipAddress;exit;
+        }
+    }
+
 	/**
 	 * Setup the layout used by the controller.
 	 *

@@ -14,6 +14,9 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
           languages: function(MultiLanguageLoader) {
               return MultiLanguageLoader();
           },
+          specs: function(MultiSpecialtyLoader) {
+              return MultiSpecialtyLoader();
+          },
           auth: ["$q", "authenticationSvc", function($q, authenticationSvc) {
               var userInfo = authenticationSvc.getUserInfo();
 
@@ -69,19 +72,35 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
       }
   })
 
+  .when('/request/workinglist', {
+      templateUrl: 'request/workinglist.html',
+      controller: 'WorkingListRequestCtrl',
+      resolve: {
+          auth: ["$q", "authenticationSvc", function($q, authenticationSvc) {
+              var userInfo = authenticationSvc.getUserInfo();
+              if (userInfo) {
+                  return $q.when(userInfo);
+              } else {
+                  return $q.reject({ authenticated: false });
+              }
+          }]
+      }
+  })
+
   ;
 }])
 
 
 .controller('CreateRequestCtrl', ['$scope','$http','$location', 'flash', 'authenticationSvc',
-        'countries', 'languages', 'TransRequest',
-        function($scope, $http, $location, flash, authenticationSvc, countries, languages, TransRequest ) {
+        'countries', 'languages','specs', 'TransRequest',
+        function($scope, $http, $location, flash, authenticationSvc, countries, languages, specs, TransRequest ) {
 
             $scope.errorMsg = flash.getErrorMessage();
             $scope.successMsg = flash.getSuccessMessage();
 
             $scope.countries = countries;
             $scope.languages = languages;
+            $scope.specs = specs;
 
             var userInfo = authenticationSvc.getUserInfo();
             $scope.request = new TransRequest({
@@ -154,7 +173,45 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
 
         var params = {
             user_id: $scope.$parent.userInfo.user_id,
-            role_id: $scope.$parent.userInfo.role_id
+            role_id: 4//get requestes created by requester
+        };
+
+        TransRequest.query( params ,function(requests) {
+            $scope.requests = requests;
+        }, function(error) {
+            $scope.errorMsg = error;
+        });
+
+
+        $scope.completeRequest = function(requestId){
+            var requestData = {
+                id: requestId,
+                status: 4
+            };
+
+
+            TransRequest.update(requestData, function(result) {
+                flash.setSuccessMessage(result.message);
+                $route.reload();
+            }, function(error) {
+                $scope.successMsg = '';
+                $scope.errorMsg = error;
+            });
+        };
+
+    }
+]
+)
+
+.controller('WorkingListRequestCtrl', ['$scope','$http', '$route','$location', 'flash', 'authenticationSvc', 'TransRequest',
+    function($scope, $http, $route, $location, flash, authenticationSvc, TransRequest ) {
+
+        $scope.errorMsg = flash.getErrorMessage();
+        $scope.successMsg = flash.getSuccessMessage();
+
+        var params = {
+            user_id: $scope.$parent.userInfo.user_id,
+            role_id: 3//get requestes accepted by translator
         };
 
         TransRequest.query( params ,function(requests) {
@@ -206,7 +263,7 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
 
 requestModule.factory('TransRequest', ['$resource',
     function($resource) {
-        return $resource('/api/request/:id', {id: '@id'},{
+        return $resource(APIURL+'/request/:id', {id: '@id'},{
                 update: {
                     method: 'PUT'
                 }

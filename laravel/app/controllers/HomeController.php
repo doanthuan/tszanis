@@ -17,7 +17,20 @@ class HomeController extends BaseController {
 
 	public function showWelcome()
 	{
+        $zones = timezone_identifiers_list();
+        foreach($zones as $zone){
+            TimeZone::create(array('value'=>$zone));
+        }
+        //print_r($zones);exit;
 		return View::make('hello');
 	}
+
+    public function testEmail()
+    {
+        Mail::send('emails.test', null, function($message)
+        {
+            $message->to('doanvuthuan@gmail.com')->subject('Test email');
+        });
+    }
 
 }

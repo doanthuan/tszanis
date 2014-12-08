@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'url' => 'http://laravel_angular.local/api',
+	'url' => 'http://api.laravel_angular.local/',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -191,5 +191,5 @@ return array(
 
 	),
 
-    'angular_url' => 'http://laravel_angular.local/'
+    'angular_url' => 'http://laravel_angular.local/#/',
 );

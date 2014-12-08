@@ -42,7 +42,8 @@ class TransRequestController extends \BaseController {
 
         $result = $query->get();
 
-        //$queries = DB::getQueryLog();
+//        $queries = DB::getQueryLog();
+//        print_r($queries);exit;
 
         return Response::json($result);
 	}
@@ -96,6 +97,7 @@ class TransRequestController extends \BaseController {
         $request->country = $request->country()->first()->country_name;
         $user = $request->user()->first();
         $request->username = $user->first_name . ' '.$user->last_name;
+        $request->specialty = $request->specialty()->first()->spec_name;
         return Response::json($request);
 	}
 

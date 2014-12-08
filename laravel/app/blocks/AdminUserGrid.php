@@ -35,16 +35,16 @@ class AdminUserGrid extends Grid{
         ));
 
         $this->addColumn(array(
-            'name' => 'role_name',
+            'name' => 'roleName',
             'header' => trans('Role'),
-            'filter_type' => 'dropdown',
-            'filter_index' => 'role_id',
-            'filter_data' => array(
-                'collection' => Role::all(),
-                'field_value' => 'role_id',
-                'field_name' => 'role_name',
-                'extraOptions' => array('' => trans('- Please Select -'))
-            )
+//            'filter_type' => 'dropdown',
+//            'filter_index' => 'role_id',
+//            'filter_data' => array(
+//                'collection' => Role::all(),
+//                'field_value' => 'role_id',
+//                'field_name' => 'role_name',
+//                'extraOptions' => array('' => trans('- Please Select -'))
+//            )
         ));
 
         $this->addColumn(array(

@@ -120,11 +120,10 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
         $scope.timezones = timezones;
         $scope.roles = roles;
 
-
         $scope.saveUser = function(){
             var userData = $scope.user;
 
-            $http.post('/api/user/register', userData).success(function(data, status, headers, config) {
+            $http.post(APIURL+'/user/register', userData).success(function(data, status, headers, config) {
 
                 if(data.status == 'success'){
                     flash.setSuccessMessage(data.message);
@@ -139,6 +138,16 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
                 console.log(data.message);
             });
         };
+
+        $scope.toggleMultiLang = function(){
+            var roles = $scope.user.roles;
+            if(roles.indexOf('3') >= 0){//requester
+                $('#user-lang').attr('multiple','multiple');
+            }
+            else{//service provider
+                $('#user-lang').removeAttr('multiple');
+            }
+        };
 }])
 
 .controller('UserRemindController', ['$scope','$http','$location', 'flash',
@@ -152,7 +161,7 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
                 email: $scope.email
             };
 
-            $http.post('/api/password/remind', postData).success(function(data, status, headers, config) {
+            $http.post(APIURL+'/password/remind', postData).success(function(data, status, headers, config) {
 
                 if(data.status == 'success'){
                     flash.setSuccessMessage(data.message);
@@ -187,7 +196,7 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
                 token: $scope.resetToken
             };
 
-            $http.post( '/api/password/reset', postData).success(function(data, status, headers, config) {
+            $http.post( APIURL+'/password/reset', postData).success(function(data, status, headers, config) {
                 if(data.status == 'success'){
                     flash.setSuccessMessage(data.message);
                     $location.path('/user/login');
@@ -215,7 +224,7 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
 
         $scope.activateToken = $routeParams.token;
 
-        $http.get('/api/user/activate/'+$scope.activateToken).success(function(data, status, headers, config) {
+        $http.get(APIURL+'/user/activate/'+$scope.activateToken).success(function(data, status, headers, config) {
             if(data.status == 'success'){
                 flash.setSuccessMessage(data.message);
                 $location.path('/user/login');
@@ -245,11 +254,12 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
         $scope.roles = roles;
 
         $scope.user = user;
+        $scope.user.role_id = null;
 
         $scope.saveProfile = function(){
             var userData = $scope.user;
 
-            $http.post('/api/user/update-profile', userData).success(function(result) {
+            $http.post(APIURL+'/user/update-profile', userData).success(function(result) {
 
                 if(result.status == 'success'){
                     authenticationSvc.setUserInfo(result.data);
@@ -263,6 +273,16 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
             }).error(function(data, status, headers, config) {
                 console.log(data.message);
             });
+        };
+
+        $scope.toggleMultiLang = function(){
+            var roles = $scope.user.roles;
+            if(roles.indexOf('3') >= 0){//requester
+                $('#user-lang').attr('multiple','multiple');
+            }
+            else{//service provider
+                $('#user-lang').removeAttr('multiple');
+            }
         };
     }
     ]

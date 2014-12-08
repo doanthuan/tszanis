@@ -11,6 +11,9 @@
 |
 */
 
+Route::get('/', 'HomeController@showWelcome');
+
+Route::get('/test', 'HomeController@testEmail');
 
 Route::controller('user', 'UserController');
 
@@ -26,6 +29,8 @@ Route::controller('role', 'RoleController');
 
 Route::resource('request', 'TransRequestController');
 
+Route::controller('specialty', 'SpecialtyController');
+
 /*
 |--------------------------------------------------------------------------
 | Admin Controllers
@@ -39,6 +44,8 @@ Route::controller('admin/language', 'AdminLanguageController');
 Route::controller('admin/time-zone', 'AdminTimeZoneController');
 
 Route::controller('admin/country', 'AdminCountryController');
+
+Route::controller('admin/specialty', 'AdminSpecialtyController');
 
 Route::controller('admin/email-template', 'AdminEmailTemplateController');
 

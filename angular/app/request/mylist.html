@@ -37,7 +37,7 @@
             <td>{{request.status | requestStatus}}</td>
             <td>{{request.created_at}}</td>
             <td>
-                <button class="btn btn-warning" ng-show="request.status == 3 && userInfo.role_id == 3" ng-click="completeRequest(request.request_id)">Completed</button>
+                <button class="btn btn-warning" ng-show="request.status == 3 && (userInfo.roles.indexOf(3) >= 0)" ng-click="completeRequest(request.request_id)">Completed</button>
             </td>
         </tr>
         </tbody>

@@ -35,8 +35,8 @@
             <td>{{request.creator_name}}</td>
             <td>{{request.created_at}}</td>
             <td>
-                <button class="btn btn-warning" ng-show="userInfo.role_id == 3" ng-click="acceptRequest(request.request_id)">Accept</button>
-                <button class="btn btn-danger" ng-show="userInfo.role_id == 4" ng-click="cancelRequest(request.request_id)">Cancel</button>
+                <button class="btn btn-warning" ng-show="userInfo.roles.indexOf(3) >= 0" ng-click="acceptRequest(request.request_id)">Accept</button>
+                <button class="btn btn-danger" ng-show="userInfo.roles.indexOf(4) >= 0" ng-click="cancelRequest(request.request_id)">Cancel</button>
             </td>
         </tr>
         </tbody>
@@ -50,5 +50,5 @@
     <!--</div>-->
 
     <br/>
-    <button class="btn btn-warning" ng-show="userInfo.role_id == 4" onclick="window.location = '#/request/create'">Make Request</button>
+    <button class="btn btn-warning" ng-show="userInfo.roles.indexOf(4) >= 0" onclick="window.location = '#/request/create'">Make Request</button>
 </div>

@@ -24,7 +24,7 @@ class User extends \Goxob\Core\Model\Model implements UserInterface, RemindableI
 	 */
 	protected $hidden = array('password', 'remember_token');
 
-    protected $fillable = array('email', 'first_name', 'last_name', 'phone', 'timezone_id', 'country_id', 'role_id');
+    protected $fillable = array('email', 'first_name', 'last_name', 'phone', 'timezone_id', 'country_id');
 
     public static $rules = array(
         'email'=>'required|email|unique:user,email,:id,user_id',
@@ -37,6 +37,11 @@ class User extends \Goxob\Core\Model\Model implements UserInterface, RemindableI
     public function languages()
     {
         return $this->belongsToMany('Language', 'user_lang', 'user_id', 'language_id');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany('Role', 'user_role', 'user_id', 'roleid');
     }
 
     public function setData($input)

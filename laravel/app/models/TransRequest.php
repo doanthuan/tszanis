@@ -10,7 +10,7 @@ class TransRequest extends \Goxob\Core\Model\Model{
     protected $table = 'request';
     protected $primaryKey = 'request_id';
 
-    protected $fillable = array('title', 'src_lang_id', 'dest_lang_id', 'country_id', 'user_id');
+    protected $fillable = array('title', 'src_lang_id', 'dest_lang_id', 'country_id', 'user_id', 'spec_id');
 
     const STATUS_CREATED = 1;
     const STATUS_CANCELED = 2;
@@ -40,5 +40,10 @@ class TransRequest extends \Goxob\Core\Model\Model{
     public function translator()
     {
         return $this->belongsTo('User', 'translator_id', 'user_id');
+    }
+
+    public function specialty()
+    {
+        return $this->belongsTo('Specialty', 'spec_id', 'spec_id');
     }
 } 

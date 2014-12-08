@@ -14,6 +14,10 @@ config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/user/login'});
 }]);
 
+//app.config(['$httpProvider', function($httpProvider) {
+//    $httpProvider.defaults.withCredentials = true;
+//}])
+
 app.controller('AppController', ['$scope','$http','$location', 'flash', 'authenticationSvc',
     function($scope, $http, $location, flash, authenticationSvc) {
 
@@ -59,3 +63,5 @@ app.factory("flash", function(){
         }
     };
 });
+
+var APIURL = "http://api.laravel_angular.local";
