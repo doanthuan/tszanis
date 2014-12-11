@@ -17,14 +17,8 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
           specs: function(MultiSpecialtyLoader) {
               return MultiSpecialtyLoader();
           },
-          auth: ["$q", "authenticationSvc", function($q, authenticationSvc) {
-              var userInfo = authenticationSvc.getUserInfo();
-
-              if (userInfo) {
-                  return $q.when(userInfo);
-              } else {
-                  return $q.reject({ authenticated: false });
-              }
+          auth: ["authenticationSvc", function(authenticationSvc) {
+              return authenticationSvc.checkLogin();
           }]
       }
   })
@@ -36,13 +30,8 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
           requests: function(MultiRequestLoader) {
               return MultiRequestLoader();
           },
-          auth: ["$q", "authenticationSvc", function($q, authenticationSvc) {
-              var userInfo = authenticationSvc.getUserInfo();
-              if (userInfo) {
-                  return $q.when(userInfo);
-              } else {
-                  return $q.reject({ authenticated: false });
-              }
+          auth: ["authenticationSvc", function(authenticationSvc) {
+              return authenticationSvc.checkLogin();
           }]
       }
   })
@@ -52,7 +41,10 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
       resolve: {
           transRequest: function(RequestLoader) {
               return RequestLoader();
-          }
+          },
+          auth: ["authenticationSvc", function(authenticationSvc) {
+              return authenticationSvc.checkLogin();
+          }]
       },
       templateUrl:'request/view.html'
   })
@@ -61,13 +53,8 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
       templateUrl: 'request/mylist.html',
       controller: 'MyListRequestCtrl',
       resolve: {
-          auth: ["$q", "authenticationSvc", function($q, authenticationSvc) {
-              var userInfo = authenticationSvc.getUserInfo();
-              if (userInfo) {
-                  return $q.when(userInfo);
-              } else {
-                  return $q.reject({ authenticated: false });
-              }
+          auth: ["authenticationSvc", function(authenticationSvc) {
+              return authenticationSvc.checkLogin();
           }]
       }
   })
@@ -76,13 +63,8 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
       templateUrl: 'request/workinglist.html',
       controller: 'WorkingListRequestCtrl',
       resolve: {
-          auth: ["$q", "authenticationSvc", function($q, authenticationSvc) {
-              var userInfo = authenticationSvc.getUserInfo();
-              if (userInfo) {
-                  return $q.when(userInfo);
-              } else {
-                  return $q.reject({ authenticated: false });
-              }
+          auth: ["authenticationSvc", function(authenticationSvc) {
+              return authenticationSvc.checkLogin();
           }]
       }
   })
@@ -179,7 +161,8 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
         TransRequest.query( params ,function(requests) {
             $scope.requests = requests;
         }, function(error) {
-            $scope.errorMsg = error;
+            //$scope.errorMsg = error;
+            $location.path('/user/logout');
         });
 
 
@@ -217,7 +200,8 @@ var requestModule = angular.module('myApp.request', ['ngRoute','smart-table'] )
         TransRequest.query( params ,function(requests) {
             $scope.requests = requests;
         }, function(error) {
-            $scope.errorMsg = error;
+            //$scope.errorMsg = error;
+            $location.path('/user/logout');
         });
 
 
@@ -272,11 +256,19 @@ requestModule.factory('TransRequest', ['$resource',
     }]
 );
 
-requestModule.factory('MultiRequestLoader', ['TransRequest', '$q',
-    function(TransRequest, $q) {
+requestModule.factory('MultiRequestLoader', ['TransRequest', '$q', 'authenticationSvc',
+    function(TransRequest, $q, authenticationSvc) {
         return function() {
             var delay = $q.defer();
-            TransRequest.query(function(requests) {
+
+            var userInfo = authenticationSvc.getUserInfo();
+            if(userInfo.roles.indexOf(3) >= 0){
+                var params = {
+                    languages: userInfo.languages
+                };
+            }
+
+            TransRequest.query(params, function(requests) {
                 delay.resolve(requests);
             }, function() {
                 delay.reject('Unable to fetch requests');

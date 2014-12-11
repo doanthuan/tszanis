@@ -18,6 +18,31 @@ config(['$routeProvider', function($routeProvider) {
 //    $httpProvider.defaults.withCredentials = true;
 //}])
 
+app.factory('authInterceptor', function ($rootScope, $q, $location, $window) {
+    return {
+        request: function (config) {
+            config.headers = config.headers || {};
+            var userInfo = JSON.parse($window.sessionStorage["userInfo"]);
+            if (userInfo && userInfo.token) {
+                config.headers['X-Auth-Token'] = userInfo.token;
+            }
+            return config;
+        },
+        response: function (response) {
+            if (response.code === 401) {
+                // handle the case where the user is not authenticated
+                $location.path('/user/login');
+            }
+            return response || $q.when(response);
+        }
+    };
+});
+
+app.config(function ($httpProvider) {
+    $httpProvider.interceptors.push('authInterceptor');
+});
+
+
 app.controller('AppController', ['$scope','$http','$location', 'flash', 'authenticationSvc',
     function($scope, $http, $location, flash, authenticationSvc) {
 
@@ -25,14 +50,16 @@ app.controller('AppController', ['$scope','$http','$location', 'flash', 'authent
 
         });
 
-        $scope.$on("$routeChangeSuccess", function(userInfo) {
-            $scope.isLoggedIn = authenticationSvc.checkLogin();
+        $scope.$on("$routeChangeSuccess", function() {
+            $scope.isLoggedIn = authenticationSvc.isLogin();
             $scope.userInfo = authenticationSvc.getUserInfo();
         });
 
         $scope.$on("$routeChangeError", function(event, current, previous, eventObj) {
             if (eventObj.authenticated === false) {
-                $location.path("/login");
+                authenticationSvc.logout().then(function(result) {
+                    $location.path('/user/login');
+                });
             }
         });
 

@@ -2,6 +2,15 @@
 
 class TransRequestController extends \BaseController {
 
+    /**
+     * Instantiate a new UserController instance.
+     */
+    public function __construct()
+    {
+        $this->beforeFilter('auth.token');
+        parent::__construct();
+    }
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -25,15 +34,24 @@ class TransRequestController extends \BaseController {
 
         if(Input::has('user_id')){
             $roleId = Input::get('role_id', 0);
-            if($roleId == Role::ROLE_REQUESTER){
+            if($roleId == Role::ROLE_REQUESTER){//my requests
                 $query->where('request.user_id', Input::get('user_id'));
             }
-            else if($roleId == Role::ROLE_SERVICE_PROVIDER){
+            else if($roleId == Role::ROLE_SERVICE_PROVIDER){//working requests
                 $query->where('request.translator_id', Input::get('user_id'));
                 $query->where('request.status', TransRequest::STATUS_ASSIGNED);
             }
         }
-        else{
+        else{//all open requests
+            $languages = Input::get('languages', null);
+            if(isset($languages) && !is_array($languages)){
+                $languages = array($languages);
+            }
+
+            if(is_array($languages)){
+                $query->whereIn('request.src_lang_id', $languages);
+                $query->whereIn('request.dest_lang_id', $languages);
+            }
             $query->where('request.status', TransRequest::STATUS_CREATED);
         }
 

@@ -47,9 +47,17 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 |
 */
 
+
+App::error(function(AuthTokenNotAuthorizedException $exception) {
+    return Response::json(array(
+        'code'      =>  401,
+        'message'   =>  $exception->getMessage()
+    ), 401);
+});
+
 App::error(function(Exception $exception, $code)
 {
-	Log::error($exception);
+    Log::error($exception);
 
     if (Request::ajax())
     {
@@ -100,6 +108,8 @@ App::error(function(Exception $exception, $code)
 //    $response->headers->set('Access-Control-Allow-Headers', 'Content-Type');
 //    return $response;
 //});
+
+
 
 /*
 |--------------------------------------------------------------------------

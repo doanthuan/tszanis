@@ -1,0 +1,54 @@
+<div class="container">
+
+    <div ng-include="'partials/message.html'"></div>
+
+    <div class="page-header">
+        <h3>Working Requests</h3>
+    </div>
+
+    <!--<ul class="requests">-->
+        <!--<li ng-repeat="request in requests">-->
+            <!--<div><a href="#/request/view/{{request.request_id}}">{{request.title}}</a></div>-->
+        <!--</li>-->
+    <!--</ul>-->
+
+    <table st-table="requests" class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th st-sort="title">Title</th>
+            <th st-sort="lang_name_src">Source Language</th>
+            <th st-sort="lang_name_dest">Destination Language</th>
+            <th st-sort="country_name">Country</th>
+            <th st-sort="username">Creator</th>
+            <th st-sort="status">Status</th>
+            <th st-sort="created_at">Created Date</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="request in requests">
+            <td>{{$index+1}}</td>
+            <td><a href="#/request/view/{{request.request_id}}">{{request.title}}</a></td>
+            <td>{{request.lang_name_src}}</td>
+            <td>{{request.lang_name_dest}}</td>
+            <td>{{request.country_name}}</td>
+            <td>{{request.creator_name}}</td>
+            <td>{{request.status | requestStatus}}</td>
+            <td>{{request.created_at}}</td>
+            <td>
+                <button class="btn btn-warning" ng-show="request.status == 3 && (userInfo.roles.indexOf(3) >= 0)" ng-click="completeRequest(request.request_id)">Completed</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!--<div class="row">-->
+        <!--<div class="col-xs-12">-->
+            <!--<div ui-grid="gridOptions" class="grid">-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <!--<button class="btn btn-warning" onclick="window.location = '#/request/create'">Make Request</button>-->
+</div>

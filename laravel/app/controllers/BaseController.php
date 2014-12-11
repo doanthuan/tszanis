@@ -4,10 +4,15 @@ class BaseController extends Controller {
 
     public function __construct()
     {
-        if (Auth::check())
-        {
-            $ipAddress = $_SERVER['REMOTE_ADDR'];
-            echo $ipAddress;exit;
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
+        $token = Request::header('X-Auth-Token');
+        $user = AuthToken::validate($token);
+        if($user){
+            $log = new ActivityLog();
+            $log->ip_address = $ipAddress;
+            $log->username = $user->email;
+            $log->visit_time = date('Y-m-d h:i:s');
+            $log->save();
         }
     }
 

@@ -18,6 +18,7 @@
                 <li><a href="{{url('admin/country')}}">Countries</a></li>
                 <li><a href="{{url('admin/specialty')}}">Specialty</a></li>
                 <li><a href="{{url('admin/email-template')}}">Email Templates</a></li>
+                <li><a href="{{url('admin/log')}}">Logs</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{{url('admin/logout')}}">Log Out</a></li>

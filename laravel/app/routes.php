@@ -31,6 +31,11 @@ Route::resource('request', 'TransRequestController');
 
 Route::controller('specialty', 'SpecialtyController');
 
+//Token based authentication
+Route::get('auth', 'Tappleby\AuthToken\AuthTokenController@index');
+Route::post('auth', 'Tappleby\AuthToken\AuthTokenController@store');
+Route::delete('auth', 'Tappleby\AuthToken\AuthTokenController@destroy');
+
 /*
 |--------------------------------------------------------------------------
 | Admin Controllers
@@ -48,6 +53,8 @@ Route::controller('admin/country', 'AdminCountryController');
 Route::controller('admin/specialty', 'AdminSpecialtyController');
 
 Route::controller('admin/email-template', 'AdminEmailTemplateController');
+
+Route::controller('admin/log', 'AdminLogController');
 
 /*
 |--------------------------------------------------------------------------

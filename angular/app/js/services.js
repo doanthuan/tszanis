@@ -144,16 +144,26 @@ myAppServices.factory("authenticationSvc", function($http, $q, $window) {
         $window.sessionStorage["userInfo"] = JSON.stringify(userInfo);
     }
 
-    function checkLogin(){
+    function isLogin(){
         if(userInfo){
             return true;
         }
         return false;
     }
 
+    function checkLogin(){
+        var userInfo = this.getUserInfo();
+        if (userInfo) {
+            return $q.when(userInfo);
+        } else {
+            return $q.reject({ authenticated: false });
+        }
+    }
+
     return {
         login: login,
         logout: logout,
+        isLogin: isLogin,
         checkLogin: checkLogin,
         getUserInfo: getUserInfo,
         setUserInfo: setUserInfo

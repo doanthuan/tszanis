@@ -61,14 +61,8 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
           user: function(authenticationSvc){
               return authenticationSvc.getUserInfo();
           },
-          auth: ["$q", "authenticationSvc", function($q, authenticationSvc) {
-              var userInfo = authenticationSvc.getUserInfo();
-
-              if (userInfo) {
-                  return $q.when(userInfo);
-              } else {
-                  return $q.reject({ authenticated: false });
-              }
+          auth: ["authenticationSvc", function(authenticationSvc) {
+              return authenticationSvc.checkLogin();
           }]
       }
   })

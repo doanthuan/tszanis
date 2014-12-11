@@ -46,6 +46,11 @@ class UserController extends BaseController {
                 $user->languages = $user->languages()->lists('user_lang.language_id');
                 $user->roles = $user->roles()->lists('user_role.roleid');
 
+                $authToken = AuthToken::create(Auth::user());
+                $publicToken = AuthToken::publicToken($authToken);
+
+                $user->token = $publicToken;
+
                 return \Responser::success('Login successfully.', $user);
             }else{
                 // Redirect to the login page.
@@ -108,6 +113,7 @@ class UserController extends BaseController {
 
     public function getUserInfo()
     {
+        $this->beforeFilter('auth.token');
         if (Auth::check())
         {
             $user = Auth::user();
@@ -123,6 +129,8 @@ class UserController extends BaseController {
 
     public function postUpdateProfile()
     {
+        $this->beforeFilter('auth.token');
+
         $user = new User;
 
         if ($user->validate(Input::all())) {
