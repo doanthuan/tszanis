@@ -46,18 +46,6 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
       templateUrl: 'user/profile.html',
       controller: 'UserProfileController',
       resolve: {
-          countries: function(MultiCountryLoader) {
-              return MultiCountryLoader();
-          },
-          languages: function(MultiLanguageLoader) {
-              return MultiLanguageLoader();
-          },
-          timezones: function(MultiTimeZoneLoader) {
-              return MultiTimeZoneLoader();
-          },
-          roles: function(MultiRoleLoader) {
-              return MultiRoleLoader();
-          },
           user: function(authenticationSvc){
               return authenticationSvc.getUserInfo();
           },
@@ -70,8 +58,8 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
   ;
 }])
 
-.controller('UserLoginController', ['$scope','$http','$location', 'flash', 'authenticationSvc',
-        function($scope, $http, $location, flash, authenticationSvc) {
+.controller('UserLoginController', ['$scope','$http','$location', 'flash', 'authenticationSvc', '$route',
+        function($scope, $http, $location, flash, authenticationSvc, $route) {
 
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
@@ -236,16 +224,29 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
 )
 
 .controller('UserProfileController', ['$scope','$http','$location', 'flash', 'authenticationSvc',
-        'countries', 'languages',  'timezones', 'roles', 'user',
-    function($scope, $http, $location, flash, authenticationSvc, countries, languages, timezones, roles, user) {
+        'MultiCountryLoader', 'MultiLanguageLoader',  'MultiTimeZoneLoader', 'MultiRoleLoader', 'user',
+    function($scope, $http, $location, flash, authenticationSvc, MultiCountryLoader, MultiLanguageLoader, MultiTimeZoneLoader, MultiRoleLoader, user) {
 
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
 
-        $scope.countries = countries;
-        $scope.languages = languages;
-        $scope.timezones = timezones;
-        $scope.roles = roles;
+        MultiCountryLoader().then(function(countries){
+            $scope.countries = countries;
+        });
+
+        MultiLanguageLoader().then(function(languages){
+            $scope.languages = languages;
+        });
+
+        MultiTimeZoneLoader().then(function(timezones){
+            $scope.timezones = timezones;
+        });
+
+        MultiRoleLoader().then(function(roles){
+            $scope.roles = roles;
+        });
+
+
 
         $scope.user = user;
         $scope.user.role_id = null;

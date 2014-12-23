@@ -8,7 +8,8 @@ var app = angular.module('myApp', [
     'myApp.version',
     'myApp.services',
     'myApp.directives',
-    'myApp.filters'
+    'myApp.filters',
+    'gettext'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/user/login'});
@@ -22,7 +23,11 @@ app.factory('authInterceptor', function ($rootScope, $q, $location, $window) {
     return {
         request: function (config) {
             config.headers = config.headers || {};
-            var userInfo = JSON.parse($window.sessionStorage["userInfo"]);
+            var userSession = $window.sessionStorage["userInfo"];
+            if(userSession){
+                var userInfo = JSON.parse(userSession);
+            }
+
             if (userInfo && userInfo.token) {
                 config.headers['X-Auth-Token'] = userInfo.token;
             }
@@ -43,16 +48,22 @@ app.config(function ($httpProvider) {
 });
 
 
-app.controller('AppController', ['$scope','$http','$location', 'flash', 'authenticationSvc',
-    function($scope, $http, $location, flash, authenticationSvc) {
+app.controller('AppController', ['$scope','$http','$location', 'flash', 'authenticationSvc', 'gettextCatalog',
+    function($scope, $http, $location, flash, authenticationSvc, gettextCatalog) {
 
         $scope.$on("locationChangeStart", function(event) {
 
         });
 
         $scope.$on("$routeChangeSuccess", function() {
+
             $scope.isLoggedIn = authenticationSvc.isLogin();
-            $scope.userInfo = authenticationSvc.getUserInfo();
+            if($scope.isLoggedIn){
+                $scope.userInfo = authenticationSvc.getUserInfo();
+                var lang_code = $scope.userInfo.lang_code;
+                gettextCatalog.currentLanguage = lang_code
+            }
+
         });
 
         $scope.$on("$routeChangeError", function(event, current, previous, eventObj) {
@@ -90,5 +101,9 @@ app.factory("flash", function(){
         }
     };
 });
+
+//app.run(function(gettextCatalog){
+//    gettextCatalog.currentLanguage = 'vi';
+//})
 
 var APIURL = "http://api.laravel_angular.local";

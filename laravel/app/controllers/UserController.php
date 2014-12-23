@@ -51,6 +51,8 @@ class UserController extends BaseController {
 
                 $user->token = $publicToken;
 
+                $user->lang_code = $user->languages()->first()->lang_code;
+
                 return \Responser::success('Login successfully.', $user);
             }else{
                 // Redirect to the login page.
@@ -119,6 +121,7 @@ class UserController extends BaseController {
             $user = Auth::user();
             $user->languages = $user->languages()->lists('user_lang.language_id');
             $user->roles = $user->roles()->lists('user_role.roleid');
+            $user->lang_code = $user->roles()->first()->lang_code;
 
             return \Responser::data( $user);
         }
@@ -152,6 +155,8 @@ class UserController extends BaseController {
 
             $user->languages = $user->languages()->lists('user_lang.language_id');
             $user->roles = $user->roles()->lists('user_role.roleid');
+
+            $user->lang_code = $user->languages()->first()->lang_code;
 
             return \Responser::success('Your profile has been updated', $user);
 
