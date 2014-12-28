@@ -58,8 +58,8 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
   ;
 }])
 
-.controller('UserLoginController', ['$scope','$http','$location', 'flash', 'authenticationSvc', '$route',
-        function($scope, $http, $location, flash, authenticationSvc, $route) {
+.controller('UserLoginController', ['$scope','$http','$location', 'flash', 'authenticationSvc', '$route', '$window',
+        function($scope, $http, $location, flash, authenticationSvc, $route, $window) {
 
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
@@ -69,6 +69,7 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
             authenticationSvc.login($scope.email, $scope.password).then(function(result) {
                 flash.setSuccessMessage(result);
                 $location.path('/user/profile');
+                $window.location.reload();
             }, function(error) {
                 $scope.successMsg = '';
                 $scope.errorMsg = error;
@@ -224,11 +225,12 @@ angular.module('myApp.user', ['ngRoute', 'remoteValidation'])
 )
 
 .controller('UserProfileController', ['$scope','$http','$location', 'flash', 'authenticationSvc',
-        'MultiCountryLoader', 'MultiLanguageLoader',  'MultiTimeZoneLoader', 'MultiRoleLoader', 'user',
-    function($scope, $http, $location, flash, authenticationSvc, MultiCountryLoader, MultiLanguageLoader, MultiTimeZoneLoader, MultiRoleLoader, user) {
+        'MultiCountryLoader', 'MultiLanguageLoader',  'MultiTimeZoneLoader', 'MultiRoleLoader', 'user', '$window',
+    function($scope, $http, $location, flash, authenticationSvc, MultiCountryLoader, MultiLanguageLoader, MultiTimeZoneLoader, MultiRoleLoader, user, $window) {
 
         $scope.errorMsg = flash.getErrorMessage();
         $scope.successMsg = flash.getSuccessMessage();
+
 
         MultiCountryLoader().then(function(countries){
             $scope.countries = countries;

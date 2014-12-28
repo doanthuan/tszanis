@@ -51,6 +51,13 @@ app.config(function ($httpProvider) {
 app.controller('AppController', ['$scope','$http','$location', 'flash', 'authenticationSvc', 'gettextCatalog',
     function($scope, $http, $location, flash, authenticationSvc, gettextCatalog) {
 
+        var userInfo = authenticationSvc.getUserInfo();
+        if(userInfo){
+            gettextCatalog.currentLanguage = userInfo.lang_code;
+        }else{
+            gettextCatalog.currentLanguage = 'en';
+        }
+
         $scope.$on("locationChangeStart", function(event) {
 
         });
@@ -58,11 +65,7 @@ app.controller('AppController', ['$scope','$http','$location', 'flash', 'authent
         $scope.$on("$routeChangeSuccess", function() {
 
             $scope.isLoggedIn = authenticationSvc.isLogin();
-            if($scope.isLoggedIn){
-                $scope.userInfo = authenticationSvc.getUserInfo();
-                var lang_code = $scope.userInfo.lang_code;
-                gettextCatalog.currentLanguage = lang_code
-            }
+            $scope.userInfo = authenticationSvc.getUserInfo();
 
         });
 

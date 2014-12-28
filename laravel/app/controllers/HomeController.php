@@ -18,7 +18,7 @@ class HomeController extends BaseController {
 	public function showWelcome()
 	{
         //print_r($zones);exit;
-		return View::make('hello');
+		//return View::make('hello');
 	}
 
     public function testEmail()

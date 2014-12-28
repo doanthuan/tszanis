@@ -264,7 +264,7 @@ requestModule.factory('MultiRequestLoader', ['TransRequest', '$q', 'authenticati
             var userInfo = authenticationSvc.getUserInfo();
             if(userInfo.roles.indexOf(3) >= 0){
                 var params = {
-                    languages: userInfo.languages
+                    "languages[]": userInfo.languages
                 };
             }
 

@@ -3,7 +3,7 @@
  */
 var directives = angular.module('myApp.directives', []);
 
-directives.directive('loading',   ['$http' ,function ($http)
+directives.directive('loading',   ['$http', function ($http)
     {
         return {
             restrict: 'A',
@@ -74,3 +74,4 @@ directives.directive('butterbar', ['$rootScope',
             }
         };
     }]);
+

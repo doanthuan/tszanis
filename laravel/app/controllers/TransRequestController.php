@@ -7,7 +7,7 @@ class TransRequestController extends \BaseController {
      */
     public function __construct()
     {
-        $this->beforeFilter('auth.token');
+        //$this->beforeFilter('auth.token');
         parent::__construct();
     }
 
